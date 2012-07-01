@@ -1,0 +1,5 @@
+*.sw*
+histfile
+HISTFILE*
+zsh_comp_url-file
+zsh_comp_user-host-mappings

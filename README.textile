@@ -1,0 +1,3 @@
+*INSTRUCTIONS*
+* ln -s ~/.zshrc ~/$REPO/zshrc
+* ln -s ~/.zshenv ~/$REPO/zshenv
