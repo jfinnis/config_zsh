@@ -8,12 +8,14 @@ setopt no_hup                     # don't quit background jobs on shell close
 setopt local_options local_traps  # allow local traps/options in functions
 setopt rc_quotes                  # double quoting -> 'a''b''c' = a'b'c
 setopt rm_star_silent             # i don't need my hand held
+setopt transient_rprompt          # remove rprompt when cut/paste
 
 # directory options
 setopt autocd                     # if dir entered by itself, cd to it
 setopt autoname_dirs              # load named directories automatically
-cdpath=(~/working ~/apps .)       # like adding /bin to path except for dirs
 source /etc/profile.d/autojump.zsh       # load autojump script
+source ~/.zsh/cdpaths             # since cdpath is local to machine
+fpath=( ~/.zsh/functions "${fpath[@]}" )
 
 # expansion options
 setopt brace_ccl                  # brace expansion for letters
