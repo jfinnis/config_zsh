@@ -43,10 +43,21 @@ PS1='%(?..(E%?%))%20<..<%~ %# '   # [error number], truncated dir name
 bindkey -v                              # set vim bindigns
 bindkey -rpM viins '^['                 # remove delay when hitting escape
 
-# completion bindings
+# Shift-tab Perform backwards menu completion
+if [[ -n "$terminfo[kcbt]" ]]; then
+    bindkey "$terminfo[kcbt]" reverse-menu-complete
+elif [[ -n "$terminfo[cbt]" ]]; then # required for GNU screen
+    bindkey "$terminfo[cbt]" reverse-menu-complete
+fi
+
+# history bindings
 bindkey -M vicmd o infer-next-history   # complete from prefix
 bindkey -M viins  infer-next-history
 bindkey -M viins  history-beginning-search-backward    # complete based on line
+bindkey -M viins  history-incremental-search-backward  # standard ctrl-r behavior
+bindkey -M vicmd  history-incremental-search-backward
+
+# completion bindings
 bindkey -M viins  _complete_help      # show completion context for cursor
 bindkey -M viins  _correct_word       # correct complete word
 bindkey -M viins  _next_tags          # cycle through tags
