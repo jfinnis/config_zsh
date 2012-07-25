@@ -87,61 +87,148 @@ autoload -z edit-command-line; zle -N edit-command-line  # load vim to edit cli
 bindkey -M vicmd v edit-command-line
 bindkey -M viins "[A" up-line-or-history      # allow up to go up in insert mode
 bindkey -M viins "[B" down-line-or-history    # allow up to go up in insert mode
+#bindkey -M viins  insert-last-command-output
+autoload -U insert-files; zle -N insert-files   # fuzzy file finder
+bindkey -M viins  insert-files
+#bindkey '^x1' jump_after_first_word
+#bindkey '^Xt' tmux-pane-words-prefix
+#bindkey '^X^X' tmux-pane-words-anywhere
+
+# extra vim mappings
+bindkey -M vicmd di delete-in
+bindkey -M vicmd da delete-around
+bindkey -M vicmd ci change-in
+bindkey -M vicmd ca change-around
+bindkey -M vicmd  increment-number
+bindkey -M vicmd  decrement-number
+bindkey -M vicmd ga what-cursor-position
+bindkey -M vicmd g~ vi-oper-swap-case
+
+# ctrl+r, d?
+#bindkey '^ed' insert-datestamp
 
 # free cmd keys: F2-F10 F12 K M U V Z g ! @ & * ( ) _ [ ] { } ; , ` = space
-# free ins keys: ctrl+ f p
+# free ins keys: ctrl+ p
 
+# unbound: redisplay
+# to bind: magic/transpose
 ##############################################################################
-######################### completion options #################################
+############################## colorings #####################################
 ##############################################################################
-setopt complete_aliases           # expand arguments based on type
-setopt complete_in_word           # tab complete in middle of words
-setopt list_packed                # compact menu listings for completion
+# enable syntax highlighting
+source ~/.zsh/submodules/syntax-highlighting/zsh-syntax-highlighting.zsh
 
-# expand paths of form /a/a/z even if z doesn't exist
-zstyle ':completion:*' expand prefix suffix
-# don't tabcomplete cdpath directories
-zstyle ':completion:*:cd:*' tag-order local-directories path-directories
-# don't include parameters in command completion
-zstyle ':completion:*:-command-:*' tag-order '!parameters'
-# complete all pids for user, filter out some jobs
-zstyle ':completion:*:*:kill:*' command "ps -ujosh -o pid,%cpu,cputime,cmd | grep -v usr\/ | grep -v ps\ -ujosh"
-# complete user/host for commands like ssh
-source ~/.zsh/zsh_comp_user-host-mappings
-# complete urls from file
-zstyle ':completion:*:urls' urls ~/.zsh/zsh_comp_url-file
+# less colors for man pages
+export LESS_TERMCAP_mb=$'\E[01;31m'             # begin blinking
+export LESS_TERMCAP_md=$'\E[01;38;5;74m'        # begin bold
+export LESS_TERMCAP_me=$'\E[0m'                 # end mode
+export LESS_TERMCAP_so=$'\E[38;33;46m'          # begin standout-mode - infobox
+export LESS_TERMCAP_se=$'\E[0m'                 # end standout-mode
+export LESS_TERMCAP_us=$'\E[04;38;5;146m'       # begin underline
+export LESS_TERMCAP_ue=$'\E[0m'                 # end underline
 
-# extra formatting to state what type the completions are
-zstyle ':completion:*:descriptions' format '%UCompleting %d%u'
-# group based on type of commands
-zstyle ':completion:*' group-name ''
-#doesn't work
-zstyle ':completion:*:-command-' group-order builtins functions commands
-
-# figure out this plus previous commands
-# ordinary complete, then allow 1 error, then match patterns such as 
-# a-b<tab> = apple-banana, then allow 4 error
-#zstyle ':completion:*' completer _complete _approximate:-one _complete:-extended _approximate:-four
-#zstyle ':completion:*:approximate-one:*' max-errors 1
-#zstyle ':completion:*:complete-extended:*' matcher 'r:|[.,_-]=* r:|=*'
-#zstyle ':completion:*:approximate-four:*' max-errors 4
+# for colored ls
+export LS_COLORS='rs=0:di=01;34:ln=01;36:hl=44;37:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arj=01;31:*.taz=01;31:*.lzh=01;31:*.lzma=01;31:*.zip=01;31:*.z=01;31:*.Z=01;31:*.dz=01;31:*.gz=01;31:*.bz2=01;31:*.bz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.rar=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.jpg=01;35:*.jpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.axv=01;35:*.anx=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.axa=00;36:*.oga=00;36:*.spx=00;36:*.xspf=00;36:'
 
 ##############################################################################
 ############################### aliases ######################################
 ##############################################################################
-alias ls='ls --color=auto'
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+alias .....='cd ../../../..'
+alias ......='cd ../../../../..'
+alias .......='cd ../../../../../..'
+
+# better options for common programs
+alias df='df -h'
+alias du='du -h'
 alias grep='grep --color=auto'
+alias la='ls -aF --color=auto --group-directories-first'
+alias ls='ls -F --color=auto --group-directories-first'
 alias mutt='/home/josh/apps/mutt-1.5.20/build/mutt -F /home/josh/.mutt/cfg/muttrc'
 alias tmux='tmux -2'
+alias zmv='noglob zmv -W'
 
-alias colors='for i in {0..255}; do printf "\x1b[38;5;${i}mcolour${i}\n"; done'
+# useful aliases
+alias ai='sudo apt-get install'
+alias cs='for i in {0..255}; do printf "\x1b[38;5;${i}mcolour${i}\n"; done'
+alias ex=extract_archive && compdef '_files -g "*.gz *.tgz *.bz2 *.tbz *.zip *.rar *.tar *.lha"' extract_archive
+alias ll='ls -F -lh --group-directories-first'
+alias lla='ls -F -alh --group-directories-first'
+alias lsdir="for dir in *;do;if [ -d \$dir ];then;du -hsL \$dir 2>/dev/null;fi;done"
+alias su=smart_sudo && compdef _sudo smart_sudo
 alias sz='source ~/.zshrc'
 alias to=testoption && compdef _options to testoption
+
+# global aliases can occur anywhere in command line
+alias -g G='| grep'
+alias -g H='--help'
+alias -g HD='| head'
+alias -g L="| less"
+alias -g S='| sort'
+alias -g TL='| tail'
+alias -g W='| wc -l'
+alias -g X='| xargs'
+
+# suffix aliases run command when file with suffix is entered on command line
+alias -s pdf='evince'
+alias -s gif='eog'
+alias -s jpg='eog'
+alias -s png='eog'
 
 ##############################################################################
 ############################## functions #####################################
 ##############################################################################
-autoload zmv
+# determine what to do with files based on mime-type defined in ~/.mailcap
+autoload -U zsh-mime-setup && zsh-mime-setup
+
+# enable some other useful functions
+autoload -U zmv zargs zrecompile
+
+# easy pastebin service
+sprunge() {
+    exec curl -F 'sprunge=<-' http://sprunge.us
+}
+getsprunge() {
+    wget -qO- $1
+}
+compdef _wget getsprunge 
+
+# display top 10 used lines
+top10() {
+    fc -l 1 | awk '{print $2}' | sort | uniq -c | sort -rn | head
+}
+
+# generate current datetime as bindable zle function
+insert-datestamp() { LBUFFER+=${(%):-'%D{%Y-%m-%d}'}; }
+zle -N insert-datestamp
+
+# jump behind the first word on the cmdline (i.e., to add options)
+jump_after_first_word() {
+    local words
+    words=(${(z)BUFFER})
+    if (( ${#words} <= 1 )) ; then
+        CURSOR=${#BUFFER}
+    else
+        CURSOR=${#${words[1]}}
+    fi
+}
+zle -N jump_after_first_word
+
+# complete Words that appear in the current tmux pane
+_tmux_pane_words() {
+  local expl
+  local -a w
+  if [[ -z "$TMUX_PANE" ]]; then
+    _message "not running inside tmux!"
+    return 1
+  fi
+  w=( ${(u)=$(tmux capture-pane \; show-buffer \; delete-buffer)} )
+  _wanted values expl 'words from current tmux pane' compadd -a w
+}
+zle -C tmux-pane-words-prefix complete-word _generic
+zle -C tmux-pane-words-anywhere complete-word _generic
 
 # show if zsh option is set
 testoption() { if [[ -o $1 ]]; then print $1 set; else print $1 unset; fi }
