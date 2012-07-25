@@ -31,8 +31,27 @@ setopt extended_history           # save date/runtime of commands in history
 setopt hist_ignore_dups           # don't see duplicates when using history
 setopt inc_append_history         # add lines to history as they are executed
 
-# prompt options
-PS1='%(?..(E%?%))%20<..<%~ %# '   # [error number], truncated dir name
+##############################################################################
+########################## prompt settings ###################################
+##############################################################################
+# setup colors
+autoload colors && colors
+for COLOR in RED GREEN YELLOW BLUE MAGENTA CYAN BLACK WHITE; do
+    eval $COLOR='%{$fg_no_bold[${(L)COLOR}]%}'
+    eval BOLD_$COLOR='%{$fg_bold[${(L)COLOR}]%}'
+done
+PS1="${CYAN}:${BOLD_CYAN}I${CYAN}: %#${WHITE} "
+RPS1="${GREEN}%~ ${RED}%(?..^E%?^)${WHITE}"
+RPS2=$RPS1
+
+# update insert/normal display on keypress
+function zle-line-init zle-keymap-select {
+    PS1="${CYAN}:${BOLD_CYAN}${${KEYMAP/vicmd/N}/(main|viins)/I}${CYAN}: %#${WHITE} "
+    PS2="${CYAN}:${BOLD_CYAN}${${KEYMAP/vicmd/N}/(main|viins)/I}${CYAN}: %_>${WHITE} "
+    zle reset-prompt
+}
+zle -N zle-line-init
+zle -N zle-keymap-select
 
 ##############################################################################
 ############################ vim bindings ####################################
