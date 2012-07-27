@@ -170,6 +170,7 @@ alias -g S='| sort'
 alias -g TL='| tail'
 alias -g W='| wc -l'
 alias -g X='| xargs'
+alias -g C='| column'
 
 # suffix aliases run command when file with suffix is entered on command line
 alias -s pdf='evince'
