@@ -84,7 +84,7 @@ bindkey -M viins  _next_tags          # cycle through tags
 bindkey -M vicmd z push-line-or-edit    # edit continuation lines as block
 bindkey -M viins  push-line-or-edit
 autoload -z edit-command-line; zle -N edit-command-line  # load vim to edit cli
-bindkey -M vicmd v edit-command-line
+bindkey -M vicmd V edit-command-line
 bindkey -M viins "[A" up-line-or-history      # allow up to go up in insert mode
 bindkey -M viins "[B" down-line-or-history    # allow up to go up in insert mode
 #bindkey -M viins  insert-last-command-output
