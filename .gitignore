@@ -5,3 +5,4 @@ zsh_comp_url-file
 zsh_comp_user-host-mappings
 cdpaths
 cache/
+local.zsh
