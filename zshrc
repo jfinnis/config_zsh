@@ -153,13 +153,14 @@ alias zmv='noglob zmv -W'
 # useful aliases
 alias ai='sudo apt-get install'
 alias cs='for i in {0..255}; do printf "\x1b[38;5;${i}mcolour${i}\n"; done'
+alias cdm='mkdir_and_cd'
 alias ex=extract_archive && compdef '_files -g "*.gz *.tgz *.bz2 *.tbz *.zip *.rar *.tar *.lha"' extract_archive
 alias ll='ls -F -lh --group-directories-first'
 alias lla='ls -F -alh --group-directories-first'
 alias lsdir="for dir in *;do;if [ -d \$dir ];then;du -hsL \$dir 2>/dev/null;fi;done"
-alias su=smart_sudo && compdef _sudo smart_sudo
+alias su='smart_sudo && compdef _sudo smart_sudo'
 alias sz='source ~/.zshrc'
-alias to=testoption && compdef _options to testoption
+alias to='testoption && compdef _options to testoption'
 
 # global aliases can occur anywhere in command line
 alias -g G='| grep'
@@ -181,6 +182,11 @@ alias -s png='eog'
 ###########################################################################}}}
 ############################## functions ##################################{{{
 ##############################################################################
+# fast mkdir && cd
+mkdir_and_cd() {
+    mkdir $1 && cd $1
+}
+
 # determine what to do with files based on mime-type defined in ~/.mailcap
 autoload -U zsh-mime-setup && zsh-mime-setup
 
