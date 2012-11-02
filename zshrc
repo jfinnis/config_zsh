@@ -157,6 +157,7 @@ alias cdm='mkdir_and_cd'
 alias ex=extract_archive && compdef '_files -g "*.gz *.tgz *.bz2 *.tbz *.zip *.rar *.tar *.lha"' extract_archive
 alias ll='ls -F -lh --group-directories-first'
 alias lla='ls -F -alh --group-directories-first'
+alias ls1='ls -1 --group-directories-first'
 alias lsdir="for dir in *;do;if [ -d \$dir ];then;du -hsL \$dir 2>/dev/null;fi;done"
 alias su='smart_sudo && compdef _sudo smart_sudo'
 alias sz='source ~/.zshrc'
