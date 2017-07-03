@@ -144,8 +144,10 @@ alias .......='cd ../../../../../..'
 alias df='df -h'
 alias du='du -h'
 alias grep='grep --color=auto'
-alias la='ls -aF --color=auto --group-directories-first'
-alias ls='ls -F --color=auto --group-directories-first'
+#alias la='ls -aF --color=auto --group-directories-first'
+alias la='gls -aF --color=auto --group-directories-first'
+#alias ls='ls -F --color=auto --group-directories-first'
+alias ls='gls -F --color=auto --group-directories-first'
 alias mutt='/home/josh/apps/mutt-1.5.20/build/mutt -F /home/josh/.mutt/cfg/muttrc'
 alias tmux='tmux -2'
 alias zmv='noglob zmv -W'
@@ -153,14 +155,16 @@ alias zmv='noglob zmv -W'
 # useful aliases
 alias ai='sudo apt-get install'
 alias cs='for i in {0..255}; do printf "\x1b[38;5;${i}mcolour${i}\n"; done'
-alias cdm='mkdir_and_cd'
-alias ex=extract_archive && compdef '_files -g "*.gz *.tgz *.bz2 *.tbz *.zip *.rar *.tar *.lha"' extract_archive
-alias ll='ls -F -lh --group-directories-first'
-alias lla='ls -F -alh --group-directories-first'
-alias ls1='ls -1 --group-directories-first'
+alias fd='find . -type d -name'
+alias ff='find . -type f -name'
+alias gfc='git fetch && git checkout'
+alias ll='gls -F -lh --group-directories-first'
+alias lla='gls -F -alh --group-directories-first'
+alias ls1='gls -1 --group-directories-first'
+alias lsdot='ls -ld .*'
 alias lsdir="for dir in *;do;if [ -d \$dir ];then;du -hsL \$dir 2>/dev/null;fi;done"
-alias su='smart_sudo && compdef _sudo smart_sudo'
 alias sz='source ~/.zshrc'
+alias ta='tmux attach'
 alias to='testoption && compdef _options to testoption'
 
 # global aliases can occur anywhere in command line
@@ -180,6 +184,11 @@ alias -s gif='eog'
 alias -s jpg='eog'
 alias -s png='eog'
 
+alias pp_json='xargs -0 node -e "console.log(JSON.stringify(JSON.parse(process.argv[1]), null, 4));"'
+alias is_json='xargs -0 node -e "try {json = JSON.parse(process.argv[1]);} catch (e) { console.log(false); json = null; } if(json) { console.log(true); }"'
+alias urlencode_json='xargs -0 node -e "console.log(encodeURIComponent(process.argv[1]))"'
+alias urldecode_json='xargs -0 node -e "console.log(decodeURIComponent(process.argv[1]))"'
+
 ###########################################################################}}}
 ############################## functions ##################################{{{
 ##############################################################################
@@ -187,6 +196,7 @@ alias -s png='eog'
 mkdir_and_cd() {
     mkdir $1 && cd $1
 }
+alias cdm='mkdir_and_cd'
 
 # determine what to do with files based on mime-type defined in ~/.mailcap
 autoload -U zsh-mime-setup && zsh-mime-setup
