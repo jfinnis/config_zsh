@@ -13,9 +13,12 @@ setopt transient_rprompt          # remove rprompt when cut/paste
 # directory options
 setopt autocd                     # if dir entered by itself, cd to it
 setopt autoname_dirs              # load named directories automatically
-source /etc/profile.d/autojump.zsh       # load autojump script
 source ~/.zsh/cdpaths             # since cdpath is local to machine
-fpath=( ~/.zsh/functions "${fpath[@]}" )
+
+#fpath=( ~/.zsh/completion ~/.zsh/functions "${fpath[@]}" )
+#for file in `ls ~/.zsh/functions`; do
+    #autoload ~/.zsh/functions/$file
+#done
 
 # expansion options
 setopt brace_ccl                  # brace expansion for letters
@@ -104,9 +107,6 @@ bindkey -M vicmd  decrement-number
 bindkey -M vicmd ga what-cursor-position
 bindkey -M vicmd g~ vi-oper-swap-case
 
-# ctrl+r, d?
-#bindkey '^ed' insert-datestamp
-
 # free cmd keys: F2-F10 F12 K M U V Z g ! @ & * ( ) _ [ ] { } ; , ` = space
 # free ins keys: ctrl+ p
 
@@ -194,35 +194,10 @@ autoload -U zsh-mime-setup && zsh-mime-setup
 # enable some other useful functions
 autoload -U zmv zargs zrecompile
 
-# easy pastebin service
-sprunge() {
-    exec curl -F 'sprunge=<-' http://sprunge.us
-}
-getsprunge() {
-    wget -qO- $1
-}
-compdef _wget getsprunge 
-
 # display top 10 used lines
 top10() {
     fc -l 1 | awk '{print $2}' | sort | uniq -c | sort -rn | head
 }
-
-# generate current datetime as bindable zle function
-insert-datestamp() { LBUFFER+=${(%):-'%D{%Y-%m-%d}'}; }
-zle -N insert-datestamp
-
-# jump behind the first word on the cmdline (i.e., to add options)
-jump_after_first_word() {
-    local words
-    words=(${(z)BUFFER})
-    if (( ${#words} <= 1 )) ; then
-        CURSOR=${#BUFFER}
-    else
-        CURSOR=${#${words[1]}}
-    fi
-}
-zle -N jump_after_first_word
 
 # complete Words that appear in the current tmux pane
 _tmux_pane_words() {
@@ -244,11 +219,6 @@ testoption() { if [[ -o $1 ]]; then print $1 set; else print $1 unset; fi }
 # make man use help as a fallback
 man() { /usr/bin/man $@ || (help $@ 2> /dev/null && help $@ | less) }
 
-# display environment vars based on prefix
-ev() { echo
-       set | egrep -i \^$1 |sed -e 's/=/     /' -e '/^PATH/d' -e '/^CDPATH/d' | sort
-       echo }
-
 # easier sudo function, with no argument, drops to root shell
 smart_sudo () {
     if [[ -n $1 ]]; then
@@ -265,50 +235,7 @@ smart_sudo () {
         sudo -s
     fi
 }
-
-# access to output of last command
-zmodload -i zsh/parameter
-insert-last-command-output() {
-    LBUFFER+="$(eval $history[$((HISTCMD-1))])"
-}
-zle -N insert-last-command-output
-
-# easy extract all function
-extract_archive () {
-    local old_dirs current_dirs lower
-    lower=${(L)1}
-    old_dirs=( *(N/) )
-    if [[ $lower == *.tar.gz || $lower == *.tgz ]]; then
-        tar zxfv $1
-    elif [[ $lower == *.gz ]]; then
-        gunzip $1
-    elif [[ $lower == *.tar.bz2 || $lower == *.tbz ]]; then
-        bunzip2 -c $1 | tar xfv -
-    elif [[ $lower == *.bz2 ]]; then
-        bunzip2 $1
-    elif [[ $lower == *.zip ]]; then
-        unzip $1
-    elif [[ $lower == *.rar ]]; then
-        unrar e $1
-    elif [[ $lower == *.tar ]]; then
-        tar xfv $1
-    elif [[ $lower == *.lha ]]; then
-        lha e $1
-    else
-        print "Unknown archive type: $1"
-        return 1
-    fi
-    # Change in to the newly created directory, and
-    # list the directory contents, if there is one.
-    current_dirs=( *(N/) )
-    for i in {1..${#current_dirs}}; do
-        if [[ $current_dirs[$i] != $old_dirs[$i] ]]; then
-            cd $current_dirs[$i]
-            ls
-            break
-        fi
-    done
-}
+alias su='smart_sudo && compdef _sudo smart_sudo'
 
 # add i/a text objects
 delete-in() {
@@ -587,7 +514,8 @@ zstyle ':completion:*:*:*:users' ignored-patterns adm amanda apache avahi \
     rpm rtkit saned shutdown speech-dispatcher squid sshd sync sys syslog \
     usbmux uucp vcsa www-data xfs 
 zstyle ':completion:*:*:vi*:*' ignored-patterns '*.(o|class|pyc)'
-source ~/.zsh/zsh_comp_user-host-mappings  # complete user/host for commands like ssh
+#source ~/.zsh/zsh_comp_user-host-mappings  # complete user/host for commands like ssh
+zstyle -e ':completion:*:(ssh|scp|sftp|rsh|rsync):hosts' hosts 'reply=(${=${${(f)"$(cat {/etc/ssh_,~/.ssh/known_}hosts(|2)(N) /dev/null)"}%%[# ]*}//,/ })'
 
 # formatting display
 zstyle ':completion:*' group-name ''  # group based on type of commands

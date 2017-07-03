@@ -1,3 +1,4 @@
 *INSTRUCTIONS*
+* git submodule init/update
 * ln -s ~/$REPO/zshrc ~/.zshrc 
 * ln -s ~/$REPO/zshenv ~/.zshenv 

@@ -6,3 +6,4 @@ zsh_comp_user-host-mappings
 cdpaths
 cache/
 local.zsh
+NERDTreeBookmarks

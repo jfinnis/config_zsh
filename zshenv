@@ -2,5 +2,8 @@ typeset -U path
 path=($path)
 
 # setup function loading
-#[[ $fpath = *josh* ]] || fpath=(~josh/.zsh $fpath)
-#autoload ${fpath[1]}/*(:t)
+fpath=( ~/.zsh/completion ~/.zsh/functions_src ~/.zsh/functions $fpath )
+autoload ~/.zsh/functions/*
+autoload ~/.zsh/functions_src/*
+source ~/.zsh/functions_src/*
+
