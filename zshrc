@@ -90,12 +90,10 @@ autoload -z edit-command-line; zle -N edit-command-line  # load vim to edit cli
 bindkey -M vicmd V edit-command-line
 bindkey -M viins "[A" up-line-or-history      # allow up to go up in insert mode
 bindkey -M viins "[B" down-line-or-history    # allow up to go up in insert mode
-#bindkey -M viins  insert-last-command-output
 autoload -U insert-files; zle -N insert-files   # fuzzy file finder
 bindkey -M viins  insert-files
-#bindkey '^x1' jump_after_first_word
-#bindkey '^Xt' tmux-pane-words-prefix
-#bindkey '^X^X' tmux-pane-words-anywhere
+bindkey '^Xt' tmux-pane-words-prefix
+bindkey '^X^X' tmux-pane-words-anywhere
 
 # extra vim mappings
 bindkey -M vicmd di delete-in
