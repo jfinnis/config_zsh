@@ -161,6 +161,7 @@ alias lla='gls -F -alh --group-directories-first'
 alias ls1='gls -1 --group-directories-first'
 alias lsdot='ls -ld .*'
 alias lsdir="for dir in *;do;if [ -d \$dir ];then;du -hsL \$dir 2>/dev/null;fi;done"
+alias serve='python -m SimpleHTTPServer'
 alias sz='source ~/.zshrc'
 alias ta='tmux attach'
 alias to='testoption && compdef _options to testoption'
