@@ -29,8 +29,8 @@ setopt rc_expand_param            # combines with each element of expansion
 
 # history options
 HISTFILE=~/.zsh/HISTFILE
-HISTSIZE=1000
-SAVEHIST=1000
+HISTSIZE=10000
+SAVEHIST=10000
 setopt append_history             # don't overwrite history file
 setopt extended_history           # save date/runtime of commands in history
 setopt hist_ignore_dups           # don't see duplicates when using history
@@ -147,12 +147,14 @@ alias la='gls -aF --color=auto --group-directories-first'
 #alias ls='ls -F --color=auto --group-directories-first'
 alias ls='gls -F --color=auto --group-directories-first'
 alias mutt='/home/josh/apps/mutt-1.5.20/build/mutt -F /home/josh/.mutt/cfg/muttrc'
+alias tree='tree --dirsfirst -I node_modules'
 alias tmux='tmux -2'
 alias zmv='noglob zmv -W'
 
 # useful aliases
 alias ai='sudo apt-get install'
 alias cs='for i in {0..255}; do printf "\x1b[38;5;${i}mcolour${i}\n"; done'
+alias dict='vim /usr/share/dict/words'
 alias fd='find . -type d -name'
 alias ff='find . -type f -name'
 alias gfc='git fetch && git checkout'
@@ -163,11 +165,34 @@ alias lsdot='ls -ld .*'
 alias lsdir="for dir in *;do;if [ -d \$dir ];then;du -hsL \$dir 2>/dev/null;fi;done"
 alias serve='python -m SimpleHTTPServer'
 alias sz='source ~/.zshrc'
+alias t='tree -F -C --dirsfirst -I node_modules'
+alias td1='tree -d -L 1'
+alias td2='tree -d -L 2'
+alias td3='tree -d -L 3'
+alias td4='tree -d -L 4'
+alias td5='tree -d -L 5'
+alias td='tree -d'
 alias ta='tmux attach'
+alias tc='tree'
 alias to='testoption && compdef _options to testoption'
+
+# aws
+alias aws='~/Library/Python/3.6/bin/aws'
+
+# docker stuff
+alias dp='echo "NAME\tID\tPORTS\tSTATUS\tSIZE\tVIRT" > /tmp/dockerps && docker ps --format "{{.Names}}\t{{.ID}}\t{{.Ports}}\t{{.Status}}\t{{.Size}}" | sed -e "s/0.0.0.0://g" -e "s:/tcp::g" -e "s/virtual //g" -e "s/->/→/g" -e "s:B (\(.*\)):B	\1:" -e "s:Up \([0-9]*\):↑ \1:" -e "s:minutes:min:" -e "s/\(([un]*healthy)\)//g" >> /tmp/dockerps && column -t -s $"	" /tmp/dockerps && rm -f /tmp/dockerps'
+alias dkr='cat .docker-containers | xargs docker kill; make run'
+
+db() {
+    docker exec -it $1 bash
+}
+dbm() {
+    docker exec -it mothership_$1_1 bash
+}
 
 # global aliases can occur anywhere in command line
 alias -g G='| grep'
+alias -g V='| grep -v'
 alias -g H='--help'
 alias -g HD='| head'
 alias -g L="| less"
@@ -477,6 +502,7 @@ export SHELL=/bin/zsh
 export TERM=screen-256color
 
 export CONKYDIR=~/.conky
+export COMPOSE_HTTP_TIMEOUT=500
 
 source ~/.zsh/local.zsh
 
@@ -559,3 +585,7 @@ zstyle ':completion:*:descriptions' format '%UCompleting %B%d%b%u'  # formatting
 
 # }}}
 # vim:fdm=marker
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
