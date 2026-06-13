@@ -181,7 +181,6 @@ alias aws='~/Library/Python/3.6/bin/aws'
 
 # docker stuff
 alias dp='echo "NAME\tID\tPORTS\tSTATUS\tSIZE\tVIRT" > /tmp/dockerps && docker ps --format "{{.Names}}\t{{.ID}}\t{{.Ports}}\t{{.Status}}\t{{.Size}}" | sed -e "s/0.0.0.0://g" -e "s:/tcp::g" -e "s/virtual //g" -e "s/->/→/g" -e "s:B (\(.*\)):B	\1:" -e "s:Up \([0-9]*\):↑ \1:" -e "s:minutes:min:" -e "s/\(([un]*healthy)\)//g" >> /tmp/dockerps && column -t -s $"	" /tmp/dockerps && rm -f /tmp/dockerps'
-alias dkr='cat .docker-containers | xargs docker kill; make run'
 
 db() {
     docker exec -it $1 bash
@@ -583,9 +582,17 @@ zstyle ':completion:*:descriptions' format '%UCompleting %B%d%b%u'  # formatting
 #    _wanted files expl ‘local files’ _files
 #}
 
+
+ # Replace nvm direct sourcing with lazy load
+ export NVM_DIR="$HOME/.nvm"
+ lazy_load_nvm() {
+   unset -f nvm node npm npx
+   [ -s "$NVM_DIR/nvm.sh" ] && source "$NVM_DIR/nvm.sh"
+ }
+ nvm()   { lazy_load_nvm; nvm "$@"; }
+ node()  { lazy_load_nvm; node "$@"; }
+ npm()   { lazy_load_nvm; npm "$@"; }
+ npx()   { lazy_load_nvm; npx "$@"; }
+
 # }}}
 # vim:fdm=marker
-
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
