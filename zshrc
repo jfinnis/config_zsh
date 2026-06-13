@@ -114,6 +114,7 @@ bindkey -M vicmd g~ vi-oper-swap-case
 ############################## colorings ##################################{{{
 ##############################################################################
 # enable syntax highlighting
+ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets)
 source ~/.zsh/submodules/syntax-highlighting/zsh-syntax-highlighting.zsh
 
 # less colors for man pages
