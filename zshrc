@@ -3,7 +3,6 @@
 # assorted options
 setopt no_beep                    # don't be annoying
 setopt correct                    # suggest corrections for mispellings
-setopt no_multibyte               # allow use of alt/meta keys in shell
 setopt no_hup                     # don't quit background jobs on shell close
 setopt local_options local_traps  # allow local traps/options in functions
 setopt rc_quotes                  # double quoting -> 'a''b''c' = a'b'c
@@ -14,11 +13,6 @@ setopt transient_rprompt          # remove rprompt when cut/paste
 setopt autocd                     # if dir entered by itself, cd to it
 setopt autoname_dirs              # load named directories automatically
 source ~/.zsh/cdpaths             # since cdpath is local to machine
-
-#fpath=( ~/.zsh/completion ~/.zsh/functions "${fpath[@]}" )
-#for file in `ls ~/.zsh/functions`; do
-    #autoload ~/.zsh/functions/$file
-#done
 
 # expansion options
 setopt brace_ccl                  # brace expansion for letters
@@ -72,8 +66,6 @@ elif [[ -n "$terminfo[cbt]" ]]; then # required for GNU screen
 fi
 
 # history bindings
-bindkey -M vicmd o infer-next-history   # complete from prefix
-bindkey -M viins  infer-next-history
 bindkey -M viins  history-beginning-search-backward    # complete based on line
 bindkey -M viins  history-incremental-search-backward  # standard ctrl-r behavior
 bindkey -M vicmd  history-incremental-search-backward
@@ -86,7 +78,7 @@ bindkey -M viins  _next_tags          # cycle through tags
 # editing bindings
 bindkey -M vicmd z push-line-or-edit    # edit continuation lines as block
 bindkey -M viins  push-line-or-edit
-autoload -z edit-command-line; zle -N edit-command-line  # load vim to edit cli
+autoload -Uz edit-command-line; zle -N edit-command-line  # load vim to edit cli
 bindkey -M vicmd V edit-command-line
 bindkey -M viins "[A" up-line-or-history      # allow up to go up in insert mode
 bindkey -M viins "[B" down-line-or-history    # allow up to go up in insert mode
@@ -105,11 +97,6 @@ bindkey -M vicmd  decrement-number
 bindkey -M vicmd ga what-cursor-position
 bindkey -M vicmd g~ vi-oper-swap-case
 
-# free cmd keys: F2-F10 F12 K M U V Z g ! @ & * ( ) _ [ ] { } ; , ` = space
-# free ins keys: ctrl+ p
-
-# unbound: redisplay
-# to bind: magic/transpose
 ###########################################################################}}}
 ############################## colorings ##################################{{{
 ##############################################################################
@@ -143,14 +130,10 @@ alias .......='cd ../../../../../..'
 alias df='df -h'
 alias du='du -h'
 alias grep='grep --color=auto'
-#alias la='ls -aF --color=auto --group-directories-first'
 alias la='gls -aF --color=auto --group-directories-first'
-#alias ls='ls -F --color=auto --group-directories-first'
 alias ls='gls -F --color=auto --group-directories-first'
-alias mutt='/home/josh/apps/mutt-1.5.20/build/mutt -F /home/josh/.mutt/cfg/muttrc'
 alias top='btop'
 alias tree='tree --dirsfirst -I node_modules'
-alias tmux='tmux -2'
 alias zmv='noglob zmv -W'
 alias vim='nvim'
 alias vi='nvim'
@@ -163,7 +146,6 @@ alias opencode='OPENCODE_EXPERIMENTAL_LSP_TOOLS=true opencode'
 alias oc='OPENCODE_EXPERIMENTAL_LSP_TOOLS=true opencode'
 alias info='fastfetch'
 alias cat='bat'
-alias ai='sudo apt-get install'
 alias cs='for i in {0..255}; do printf "\x1b[38;5;${i}mcolour${i}\n"; done'
 alias dict='vim /usr/share/dict/words'
 alias fd='find . -type d -name'
@@ -201,10 +183,7 @@ alias td='tree -d'
 alias ta='tmux attach'
 alias tl='tmux list-sessions'
 alias ts='~/.config/tmux/tmux-sessionizer.sh'
-alias to='testoption && compdef _options to testoption'
-
-# aws
-alias aws='~/Library/Python/3.6/bin/aws'
+alias to='testoption; compdef _options to testoption'
 
 # docker stuff
 alias dp='echo "NAME\tID\tPORTS\tSTATUS\tSIZE\tVIRT" > /tmp/dockerps && docker ps --format "{{.Names}}\t{{.ID}}\t{{.Ports}}\t{{.Status}}\t{{.Size}}" | sed -e "s/0.0.0.0://g" -e "s:/tcp::g" -e "s/virtual //g" -e "s/->/→/g" -e "s:B (\(.*\)):B	\1:" -e "s:Up \([0-9]*\):↑ \1:" -e "s:minutes:min:" -e "s/\(([un]*healthy)\)//g" >> /tmp/dockerps && column -t -s $"	" /tmp/dockerps && rm -f /tmp/dockerps'
@@ -229,18 +208,10 @@ alias -g W='| wc -l'
 alias -g X='| xargs'
 alias -g C='| column'
 
-# suffix aliases run command when file with suffix is entered on command line
-# alias -s pdf='evince'
-# alias -s gif='eog'
-# alias -s jpg='eog'
-# alias -s png='eog'
-
 alias pp_json='xargs -0 node -e "console.log(JSON.stringify(JSON.parse(process.argv[1]), null, 4));"'
 alias is_json='xargs -0 node -e "try {json = JSON.parse(process.argv[1]);} catch (e) { console.log(false); json = null; } if(json) { console.log(true); }"'
 alias urlencode_json='xargs -0 node -e "console.log(encodeURIComponent(process.argv[1]))"'
 alias urldecode_json='xargs -0 node -e "console.log(decodeURIComponent(process.argv[1]))"'
-
-alias studycss='~/.tmux/script-study-css.sh'
 
 ###########################################################################}}}
 ############################## functions ##################################{{{
@@ -311,7 +282,7 @@ _tmux_pane_words() {
     _message "not running inside tmux!"
     return 1
   fi
-  w=( ${(u)=$(tmux capture-pane \; show-buffer \; delete-buffer)} )
+  w=( ${(u)=$(tmux capture-pane -p)} )
   _wanted values expl 'words from current tmux pane' compadd -a w
 }
 zle -C tmux-pane-words-prefix complete-word _generic
@@ -319,9 +290,6 @@ zle -C tmux-pane-words-anywhere complete-word _generic
 
 # show if zsh option is set
 testoption() { if [[ -o $1 ]]; then print $1 set; else print $1 unset; fi }
-
-# make man use help as a fallback
-man() { /usr/bin/man $@ || (help $@ 2> /dev/null && help $@ | less) }
 
 # easier sudo function, with no argument, drops to root shell
 smart_sudo () {
@@ -339,7 +307,7 @@ smart_sudo () {
         sudo -s
     fi
 }
-alias su='smart_sudo && compdef _sudo smart_sudo'
+alias su='smart_sudo; compdef _sudo smart_sudo'
 
 # add i/a text objects
 delete-in() {
@@ -562,9 +530,6 @@ zle -N magic-forward-word
 ##############################################################################
 export EDITOR=nvim
 export VISUAL=nvim
-export SHELL=/bin/zsh
-export TERM=xterm-256color
-#export TERM=xterm-256color-italic
 export MANPAGER='nvim +Man!'
 
 #export JAVA_HOME="/usr/bin/java"
@@ -604,10 +569,6 @@ zstyle ':completion:*' completer _complete _complete:-extended
 #zstyle -e ':completion:*:approximate-one:*' max-errors 'reply=1'
 zstyle ':completion:*:complete-extended:*' matcher 'r:|[.,_-]=* r:|=*'  # expand a-b<tab> => apple-banana, e.g.
 
-# would be useful if 1/3 applied after /
-#zstyle ':completion:*' completer _complete _approximate:-fraction _complete:-extended
-#zstyle -e ':completion:*:approximate-fraction:*' max-errors 'reply=( $(( ($#PREFIX + $#SUFFIX) / 3 )) )'  # 1/3 errors allowed
-
 # general options
 zstyle ':completion:*' expand prefix suffix  # expand /a/a/z even if no z
 zstyle ':completion:*' menu select  # tab cycles through completion options
@@ -618,10 +579,9 @@ zstyle ':completion:*:*:-subscript-:*' tag-order indexes parameters  # prefer in
 
 # command specific completion
 zstyle ':completion:*:cd:*' tag-order local-directories path-directories   # don't tabcomplete cdpath directories
-zstyle ':completion:*:*:evince:*' file-patterns '(#i)*.(pdf|ps) *(-/):directories'
-zstyle ':completion:*:*:kill:*' command "ps -ujosh -o pid,%cpu,cputime,cmd | grep -v lib\/ | grep -v ps\ -ujosh"  # complete all pids for user, filter out some jobs
+zstyle ':completion:*:*:kill:*' command "ps -u ${USER} -o pid,%cpu,cputime,cmd | grep -v lib\/ | grep -v ps\ -u ${USER}"  # complete all pids for user, filter out some jobs
 zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#)*=0=01;31'
-zstyle ':completion:*:processes-names' command 'ps c -u ${USER} -o command | uniq'  # list more processes for commands like killall
+zstyle ':completion:*:processes-names' command "ps c -u ${USER} -o command | uniq"  # list more processes for commands like killall
 zstyle ':completion:*:man:*' menu yes select  # into menu right away
 zstyle ':completion:*:manuals' separate-sections true  # separate into sections listings from man
 zstyle ':completion:*:manuals.(^1*)' insert-sections true  # dunno
@@ -640,7 +600,6 @@ zstyle ':completion:*:*:*:users' ignored-patterns adm amanda apache avahi \
     rpm rtkit saned shutdown speech-dispatcher squid sshd sync sys syslog \
     usbmux uucp vcsa www-data xfs 
 zstyle ':completion:*:*:vi*:*' ignored-patterns '*.(o|class|pyc)'
-#source ~/.zsh/zsh_comp_user-host-mappings  # complete user/host for commands like ssh
 zstyle -e ':completion:*:(ssh|scp|sftp|rsh|rsync):hosts' hosts 'reply=(${=${${(f)"$(cat {/etc/ssh_,~/.ssh/known_}hosts(|2)(N) /dev/null)"}%%[# ]*}//,/ })'
 
 # formatting display
@@ -649,16 +608,6 @@ zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
 zstyle ':completion:*' list-dirs-first true
 zstyle ':completion:*:corrections' format "%U%B%d%b - %e error(s)%u"  # formatting strings
 zstyle ':completion:*:descriptions' format '%UCompleting %B%d%b%u'  # formatting strings
-#zstyle ':completion:*:-command-' group-order builtins functions commands  #doesn't work, alias
-
-# figure out colors
-#zstyle ':completion:*:messages' format $'%{\e[0;31m%}%d%{\e[0m%}'
-#zstyle ':completion:*:warnings' format $'%{\e[0;31m%}No matches for: %d%{\e[0m%}'
-
-# speedup git completion (disabled until necessary)
-#__git_files () {
-#    _wanted files expl ‘local files’ _files
-#}
 
  # Replace nvm direct sourcing with lazy load
  export NVM_DIR="$HOME/.nvm"
