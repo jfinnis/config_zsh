@@ -513,11 +513,11 @@ setopt complete_in_word           # tab complete in middle of words
 setopt list_packed                # compact menu listings for completion
 
 # enable completion and specify cache
-zstyle :compinstall filename '/home/josh/.zshrc'
+zstyle :compinstall filename '/Users/finnisj/.zshrc'
 if [[ ! -d ~/.zsh/cache ]]; then
     mkdir -p ~/.zsh/cache
 fi
-autoload -Uz compinit && compinit -d ~/.zsh/cache/zcompdump
+autoload -Uz compinit && compinit -C -d ~/.zsh/cache/zcompdump
 zstyle ':completion:*' use-cache on
 zstyle ':completion:*' cache-path ~/.zsh/cache/cache
 
@@ -581,7 +581,6 @@ zstyle ':completion:*:descriptions' format '%UCompleting %B%d%b%u'  # formatting
 #__git_files () {
 #    _wanted files expl ‘local files’ _files
 #}
-
 
  # Replace nvm direct sourcing with lazy load
  export NVM_DIR="$HOME/.nvm"
