@@ -147,23 +147,48 @@ alias la='gls -aF --color=auto --group-directories-first'
 #alias ls='ls -F --color=auto --group-directories-first'
 alias ls='gls -F --color=auto --group-directories-first'
 alias mutt='/home/josh/apps/mutt-1.5.20/build/mutt -F /home/josh/.mutt/cfg/muttrc'
+alias top='btop'
 alias tree='tree --dirsfirst -I node_modules'
 alias tmux='tmux -2'
 alias zmv='noglob zmv -W'
+alias vim='nvim'
+alias vi='nvim'
+alias watch='watch --color'
 
 # useful aliases
+alias bs="bun start"
+alias bt="bun run test"
+alias opencode='OPENCODE_EXPERIMENTAL_LSP_TOOLS=true opencode'
+alias oc='OPENCODE_EXPERIMENTAL_LSP_TOOLS=true opencode'
+alias info='fastfetch'
+alias cat='bat'
 alias ai='sudo apt-get install'
 alias cs='for i in {0..255}; do printf "\x1b[38;5;${i}mcolour${i}\n"; done'
 alias dict='vim /usr/share/dict/words'
 alias fd='find . -type d -name'
 alias ff='find . -type f -name'
+alias jj5='jj st && echo && jj --limit 5 -r ::@'
+alias jj10='jj st && echo && jj --limit 10 -r ::@'
+alias jj20='jj st && echo && jj --limit 20 -r ::@'
+alias jji='jj squash -i'
+alias jjb='jj bookmark list'
+alias jjnl='jj log -r "ancestors(reachable(@, mutable()), 2)"' # jj log Not Local
+#alias jjf='jj git fetch' - now a function
+#alias jjd - jj diff - now a function
+alias jjdm='jj describe -m '
+alias jjp='jj git push'
+alias jjs='jj squash && clear && jj5'
+alias jju='jj rebase -s lwmp -d master; jj rebase -s tpxk -d master; jj rebase -s xvqm -d master; jj rebase -s sooq -d master; jj rebase -s myxq -d master;'
+alias jj+='jj edit @+'
+alias jj+i='jj edit @+; jj squash -i'
+alias jj-='jj edit @-'
 alias gfc='git fetch && git checkout'
 alias ll='gls -F -lh --group-directories-first'
 alias lla='gls -F -alh --group-directories-first'
 alias ls1='gls -1 --group-directories-first'
 alias lsdot='ls -ld .*'
 alias lsdir="for dir in *;do;if [ -d \$dir ];then;du -hsL \$dir 2>/dev/null;fi;done"
-alias serve='python -m SimpleHTTPServer'
+alias serve='python3 ~/Documents/simple_cors_server.py 2002'
 alias sz='source ~/.zshrc'
 alias t='tree -F -C --dirsfirst -I node_modules'
 alias td1='tree -d -L 1'
@@ -173,7 +198,8 @@ alias td4='tree -d -L 4'
 alias td5='tree -d -L 5'
 alias td='tree -d'
 alias ta='tmux attach'
-alias tc='tree'
+alias tl='tmux list-sessions'
+alias ts='~/.config/tmux/tmux-sessionizer.sh'
 alias to='testoption && compdef _options to testoption'
 
 # aws
@@ -192,6 +218,7 @@ dbm() {
 # global aliases can occur anywhere in command line
 alias -g G='| grep'
 alias -g V='| grep -v'
+alias -g F='| fzf'
 alias -g H='--help'
 alias -g HD='| head'
 alias -g L="| less"
@@ -202,24 +229,67 @@ alias -g X='| xargs'
 alias -g C='| column'
 
 # suffix aliases run command when file with suffix is entered on command line
-alias -s pdf='evince'
-alias -s gif='eog'
-alias -s jpg='eog'
-alias -s png='eog'
+# alias -s pdf='evince'
+# alias -s gif='eog'
+# alias -s jpg='eog'
+# alias -s png='eog'
 
 alias pp_json='xargs -0 node -e "console.log(JSON.stringify(JSON.parse(process.argv[1]), null, 4));"'
 alias is_json='xargs -0 node -e "try {json = JSON.parse(process.argv[1]);} catch (e) { console.log(false); json = null; } if(json) { console.log(true); }"'
 alias urlencode_json='xargs -0 node -e "console.log(encodeURIComponent(process.argv[1]))"'
 alias urldecode_json='xargs -0 node -e "console.log(decodeURIComponent(process.argv[1]))"'
 
+alias studycss='~/.tmux/script-study-css.sh'
+
 ###########################################################################}}}
 ############################## functions ##################################{{{
 ##############################################################################
+# jj diff piped to delta but passes args to jj
+jjd() {
+    jj diff "$@" | delta --pager "less -FRX"
+}
+
+# jjf will fetch and store the output so that jjt can track it
+jjf() {
+    jj git fetch | tee "${HOME}/.config/jj/.jj-last-fetch"
+}
+
+# jjt parses the tempfile and tracks the single bookmark
+jjt() {
+    local tmpfile="${HOME}/.jj-last-fetch"
+
+    if [[ ! -f "$tmpfile" ]]; then
+        echo "No previous fetch output found. Run 'jjf' first."
+        return 1
+    fi
+
+    local bm="$(grep '\[new\]' "$tmpfile" | awk '{print $2}')"
+    if [[ -z "$bm" ]]; then
+        echo "No new bookmarks found in last fetch."
+        return 1
+    fi
+
+    echo "Tracking bookmark: $bm"
+    jj bookmark track "$bm"
+}
+
 # fast mkdir && cd
 mkdir_and_cd() {
     mkdir $1 && cd $1
 }
 alias cdm='mkdir_and_cd'
+
+# create gif from a screen recording
+record_to_gif() {
+    mkdir -p /tmp/record_to_gif
+    ffmpeg -i $1 /tmp/record_to_gif/frame%04d.png
+    gifski --fps 50 -o $2 /tmp/record_to_gif/frame*.png
+    rm /tmp/record_to_gif/frame*png
+    if [[ -e $2 ]]; then
+        rm $1
+    fi
+}
+alias gifrecord='record_to_gif'
 
 # determine what to do with files based on mime-type defined in ~/.mailcap
 autoload -U zsh-mime-setup && zsh-mime-setup
@@ -486,22 +556,29 @@ zle -N transpose-big-words
 zle -N magic-forward-char
 zle -N magic-forward-word
 
-# google command line aliases
-gde() { google docs edit --title $1; }
-alias gdl='google docs list --delimiter " == " --fields title,url'
-gca() { google calendar add "$*"; }
-alias gcd='google calendar delete'
-alias gct='google calendar today --delimiter " == "'
-
 ###########################################################################}}}
 ######################### environment variables ###########################{{{
 ##############################################################################
-export EDITOR=vim
+export EDITOR=nvim
+export VISUAL=nvim
 export SHELL=/bin/zsh
-export TERM=screen-256color
+export TERM=xterm-256color
+#export TERM=xterm-256color-italic
+export MANPAGER='nvim +Man!'
 
-export CONKYDIR=~/.conky
+#export JAVA_HOME="/usr/bin/java"
 export COMPOSE_HTTP_TIMEOUT=500
+
+
+# Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
+export PATH="$PATH:$HOME/.rvm/bin"
+
+# bun completions
+[ -s "/Users/finnisj/.bun/_bun" ] && source "/Users/finnisj/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
 
 source ~/.zsh/local.zsh
 
@@ -592,6 +669,8 @@ zstyle ':completion:*:descriptions' format '%UCompleting %B%d%b%u'  # formatting
  node()  { lazy_load_nvm; node "$@"; }
  npm()   { lazy_load_nvm; npm "$@"; }
  npx()   { lazy_load_nvm; npx "$@"; }
+
+export PATH="${HOMEBREW_PREFIX}/opt/openssl/bin:$PATH:/Users/finnisj/.local/bin:/Users/finnisj/.cargo/bin"
 
 # }}}
 # vim:fdm=marker
