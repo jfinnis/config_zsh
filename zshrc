@@ -150,18 +150,19 @@ alias cs='for i in {0..255}; do printf "\x1b[38;5;${i}mcolour${i}\n"; done'
 alias dict='vim /usr/share/dict/words'
 alias fd='find . -type d -name'
 alias ff='find . -type f -name'
+alias jjl='jj st && echo && jj log -r "(trunk()..@):: | (trunk()..@)-"'
 alias jj5='jj st && echo && jj --limit 5 -r ::@'
 alias jj10='jj st && echo && jj --limit 10 -r ::@'
 alias jj20='jj st && echo && jj --limit 20 -r ::@'
 alias jji='jj squash -i'
 alias jjb='jj bookmark list'
-alias jjnl='jj log -r "ancestors(reachable(@, mutable()), 2)"' # jj log Not Local
+alias jj@='jj log -r "ancestors(reachable(@, mutable()), 2)"' # jj log just @-chain
 #alias jjf='jj git fetch' - now a function
 #alias jjd - jj diff - now a function
 alias jjdm='jj describe -m '
 alias jjp='jj git push'
 alias jjs='jj squash && clear && jj5'
-alias jju='jj rebase -s lwmp -d master; jj rebase -s tpxk -d master; jj rebase -s xvqm -d master; jj rebase -s sooq -d master; jj rebase -s myxq -d master;'
+alias jju='jj rebase -s lwmp -o master; jj rebase -s xvqm -o master; jj rebase -s sooq -o master; jj rebase -s myxq -o master;'
 alias jj+='jj edit @+'
 alias jj+i='jj edit @+; jj squash -i'
 alias jj-='jj edit @-'
@@ -221,6 +222,7 @@ jjd() {
     jj diff "$@" | delta --pager "less -FRX"
 }
 
+# 
 # jjf will fetch and store the output so that jjt can track it
 jjf() {
     jj git fetch | tee "${HOME}/.config/jj/.jj-last-fetch"
