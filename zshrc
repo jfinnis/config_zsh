@@ -629,6 +629,7 @@ zstyle ':completion:*:descriptions' format '%UCompleting %B%d%b%u'  # formatting
  npx()   { lazy_load_nvm; npx "$@"; }
 
 export PATH="${HOMEBREW_PREFIX}/opt/openssl/bin:$PATH:/Users/finnisj/.local/bin:/Users/finnisj/.cargo/bin"
+export HOMEBREW_CASK_OPTS="--appdir=~/Apps"
 
 # }}}
 # vim:fdm=marker
