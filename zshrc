@@ -542,7 +542,13 @@ export COMPOSE_HTTP_TIMEOUT=500
 export PATH="$PATH:$HOME/.rvm/bin"
 
 # bun completions
-[ -s "/Users/finnisj/.bun/_bun" ] && source "/Users/finnisj/.bun/_bun"
+bun() {
+    if [ -z "$BUN_LOADED" ]; then
+        [ -s "/Users/finnisj/.bun/_bun" ] && source "/Users/finnisj/.bun/_bun"
+        BUN_LOADED=true
+    fi
+    command bun "$@"
+}
 
 # bun
 export BUN_INSTALL="$HOME/.bun"
