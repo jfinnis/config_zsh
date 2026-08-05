@@ -12,7 +12,7 @@ setopt transient_rprompt          # remove rprompt when cut/paste
 # directory options
 setopt autocd                     # if dir entered by itself, cd to it
 setopt autoname_dirs              # load named directories automatically
-source ~/.zsh/cdpaths             # since cdpath is local to machine
+source ~/.config/zsh/cdpaths             # since cdpath is local to machine
 
 # expansion options
 setopt brace_ccl                  # brace expansion for letters
@@ -22,7 +22,7 @@ setopt magic_equal_subst          # expand pattern =~ and =...~ (i.e., paths)
 setopt rc_expand_param            # combines with each element of expansion
 
 # history options
-HISTFILE=~/.zsh/HISTFILE
+HISTFILE=~/.config/zsh/HISTFILE
 HISTSIZE=10000
 SAVEHIST=10000
 setopt append_history             # don't overwrite history file
@@ -102,7 +102,7 @@ bindkey -M vicmd g~ vi-oper-swap-case
 ##############################################################################
 # enable syntax highlighting
 ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets)
-source ~/.zsh/submodules/syntax-highlighting/zsh-syntax-highlighting.zsh
+source ~/.config/zsh/submodules/syntax-highlighting/zsh-syntax-highlighting.zsh
 
 # less colors for man pages
 export LESS_TERMCAP_mb=$'\E[01;31m'             # begin blinking
@@ -559,7 +559,7 @@ bun() {
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
 
-source ~/.zsh/local.zsh
+source ~/.config/zsh/local.zsh
 
 ###########################################################################}}}
 ######################### completion options ##############################{{{
@@ -570,12 +570,12 @@ setopt list_packed                # compact menu listings for completion
 
 # enable completion and specify cache
 zstyle :compinstall filename '/Users/finnisj/.zshrc'
-if [[ ! -d ~/.zsh/cache ]]; then
-    mkdir -p ~/.zsh/cache
+if [[ ! -d ~/.config/zsh/cache ]]; then
+    mkdir -p ~/.config/zsh/cache
 fi
-autoload -Uz compinit && compinit -C -d ~/.zsh/cache/zcompdump
+autoload -Uz compinit && compinit -C -d ~/.config/zsh/cache/zcompdump
 zstyle ':completion:*' use-cache on
-zstyle ':completion:*' cache-path ~/.zsh/cache/cache
+zstyle ':completion:*' cache-path ~/.config/zsh/cache/cache
 
 # completers
 zstyle ':completion:*' completer _complete _complete:-extended
@@ -602,7 +602,7 @@ zstyle ':completion:*:rm:*' ignore-line yes  # don't allow repeat parameters
 zstyle ':completion:tmux-pane-words-(prefix|anywhere):*' completer _tmux_pane_words
 zstyle ':completion:tmux-pane-words-(prefix|anywhere):*' ignore-line current
 zstyle ':completion:tmux-pane-words-anywhere:*' matcher-list 'b:=* m:{A-Za-z}={a-zA-Z}'
-zstyle ':completion:*:urls' urls ~/.zsh/zsh_comp_url-file  # complete urls from file
+zstyle ':completion:*:urls' urls ~/.config/zsh/zsh_comp_url-file  # complete urls from file
 zstyle ':completion:*:*:*:users' ignored-patterns adm amanda apache avahi \
     avahi-autoipd backup beaglidx bin cacti canna clamav couchdb daemon \
     dbus distcache dovecot fax ftp games gdm gkrellmd gnats gopher hacluster \

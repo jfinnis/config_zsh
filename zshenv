@@ -2,8 +2,8 @@ typeset -U path
 path=($path)
 
 # setup function loading
-fpath=( ~/.zsh/completion ~/.zsh/functions_src ~/.zsh/functions $fpath )
-autoload ~/.zsh/functions/*
-autoload ~/.zsh/functions_src/*
-source ~/.zsh/functions_src/*
+fpath=( ~/.config/zsh/completion ~/.config/zsh/functions_src ~/.config/zsh/functions $fpath )
+autoload ~/.config/zsh/functions/*
+autoload ~/.config/zsh/functions_src/*
+source ~/.config/zsh/functions_src/*
 
