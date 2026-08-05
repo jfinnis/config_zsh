@@ -151,6 +151,9 @@ alias dict='vim /usr/share/dict/words'
 alias fd='find . -type d -name'
 alias ff='find . -type f -name'
 alias jjl='jj st && echo && jj log -r "(trunk()..@):: | (trunk()..@)-"'
+alias jjl5='jj st && echo && jj log -r "(trunk()..@):: | (trunk()..@)-" --limit 5'
+alias jjl10='jj st && echo && jj log -r "(trunk()..@):: | (trunk()..@)-" --limit 10'
+alias jjl20='jj st && echo && jj log -r "(trunk()..@):: | (trunk()..@)-" --limit 20'
 alias jj5='jj st && echo && jj --limit 5 -r ::@'
 alias jj10='jj st && echo && jj --limit 10 -r ::@'
 alias jj20='jj st && echo && jj --limit 20 -r ::@'
@@ -160,6 +163,7 @@ alias jj@='jj log -r "ancestors(reachable(@, mutable()), 2)"' # jj log just @-ch
 #alias jjf='jj git fetch' - now a function
 #alias jjd - jj diff - now a function
 alias jjdm='jj describe -m '
+alias jjcm='jj commit -m '
 alias jjp='jj git push'
 alias jjs='jj squash && clear && jj5'
 alias jju='jj rebase -s lwmp -o master; jj rebase -s xvqm -o master; jj rebase -s sooq -o master; jj rebase -s myxq -o master;'
