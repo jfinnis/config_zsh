@@ -189,6 +189,7 @@ alias ta='tmux attach'
 alias tl='tmux list-sessions'
 alias ts='~/.config/tmux/tmux-sessionizer.sh'
 alias to='testoption; compdef _options to testoption'
+alias npmu='npx npm-check-updates --interactive'
 
 # docker stuff
 alias dp='echo "NAME\tID\tPORTS\tSTATUS\tSIZE\tVIRT" > /tmp/dockerps && docker ps --format "{{.Names}}\t{{.ID}}\t{{.Ports}}\t{{.Status}}\t{{.Size}}" | sed -e "s/0.0.0.0://g" -e "s:/tcp::g" -e "s/virtual //g" -e "s/->/→/g" -e "s:B (\(.*\)):B	\1:" -e "s:Up \([0-9]*\):↑ \1:" -e "s:minutes:min:" -e "s/\(([un]*healthy)\)//g" >> /tmp/dockerps && column -t -s $"	" /tmp/dockerps && rm -f /tmp/dockerps'
