@@ -29,6 +29,8 @@ setopt append_history             # don't overwrite history file
 setopt extended_history           # save date/runtime of commands in history
 setopt hist_ignore_dups           # don't see duplicates when using history
 setopt inc_append_history         # add lines to history as they are executed
+setopt share_history              # each shell sees the history, not localized to just
+                                  # one shell
 
 ###########################################################################}}}
 ########################## prompt settings ################################{{{
