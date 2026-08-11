@@ -638,3 +638,11 @@ export HOMEBREW_CASK_OPTS="--appdir=~/Apps"
 
 # }}}
 # vim:fdm=marker
+
+# opencode
+export PATH=/Users/finnisj/.opencode/bin:$PATH
+# The following lines have been added by Docker Desktop to enable Docker CLI completions.
+fpath=(/Users/finnisj/.docker/completions $fpath)
+autoload -Uz compinit
+compinit
+# End of Docker CLI completions
