@@ -144,8 +144,8 @@ alias watch='watch --color'
 # useful aliases
 alias bs="bun start"
 alias bt="bun run test"
-alias opencode='OPENCODE_EXPERIMENTAL_LSP_TOOLS=true opencode'
-alias oc='OPENCODE_EXPERIMENTAL_LSP_TOOLS=true opencode'
+alias oc='opencode2'
+alias oc1='OPENCODE_EXPERIMENTAL_LSP_TOOL=true opencode'
 alias info='fastfetch'
 alias cat='bat'
 alias cs='for i in {0..255}; do printf "\x1b[38;5;${i}mcolour${i}\n"; done'
