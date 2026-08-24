@@ -1,3 +1,6 @@
 [submodule "submodules/syntax-highlighting"]
 	path = submodules/syntax-highlighting
 	url = http://github.com/zsh-users/zsh-syntax-highlighting.git
+[submodule "submodules/zsh-jj"]
+	path = submodules/zsh-jj
+	url = https://github.com/rkh/zsh-jj.git
