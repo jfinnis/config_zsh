@@ -142,6 +142,7 @@ alias vi='nvim'
 alias watch='watch --color'
 
 # useful aliases
+alias tls="tmux list-sessions"
 alias bs="bun start"
 alias bt="bun run test"
 alias oc='opencode2'
