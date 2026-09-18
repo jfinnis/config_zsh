@@ -564,10 +564,14 @@ export PATH="$BUN_INSTALL/bin:$PATH"
 source ~/.config/zsh/local.zsh
 
 # jj info in right hand side zsh prompt
+setopt prompt_subst
 fpath+=~/.config/zsh/submodules/zsh-jj/functions
 zstyle ':vcs_info:*' enable jj
+zstyle ':vcs_info:*' check-for-changes true
+zstyle ':vcs_info:*:*' formats " (%s %m%a %b %i)"
+zstyle ':vcs_info:*:*' actionformats " (%s|%a %m %b %i)"
 autoload -Uz vcs_info
-precmd_functions+=(vcs_info)
+(( ${precmd_functions[(I)vcs_info]} )) || precmd_functions+=(vcs_info)
 RPS1="${GREEN}%~ ${MAGENTA}\${vcs_info_msg_0_} ${RED}%(?..^E%?^)${WHITE}"
 
 ###########################################################################}}}
