@@ -12,7 +12,7 @@ setopt transient_rprompt          # remove rprompt when cut/paste
 # directory options
 setopt autocd                     # if dir entered by itself, cd to it
 setopt autoname_dirs              # load named directories automatically
-source ~/.config/zsh/cdpaths             # since cdpath is local to machine
+source ~/.config/zsh/cdpaths      # since cdpath is local to machine
 
 # expansion options
 setopt brace_ccl                  # brace expansion for letters
@@ -45,14 +45,17 @@ PS1="${CYAN}:${BOLD_CYAN}I${CYAN}: %#${WHITE} "
 RPS1="${GREEN}%~ ${RED}%(?..^E%?^)${WHITE}"
 RPS2=$RPS1
 
-# update insert/normal display on keypress
-function zle-line-init zle-keymap-select {
-    PS1="${CYAN}:${BOLD_CYAN}${${KEYMAP/vicmd/N}/(main|viins)/I}${CYAN}: %#${WHITE} "
-    PS2="${CYAN}:${BOLD_CYAN}${${KEYMAP/vicmd/N}/(main|viins)/I}${CYAN}: %_>${WHITE} "
-    zle reset-prompt
-}
-zle -N zle-line-init
-zle -N zle-keymap-select
+# update prompt to display insert/normal on keypress - except in kiro which
+# throws off the agent communication
+if [[ "$TERM_PROGRAM" != "kiro" ]]; then
+    function zle-line-init zle-keymap-select {
+        PS1="${CYAN}:${BOLD_CYAN}${${KEYMAP/vicmd/N}/(main|viins)/I}${CYAN}: %#${WHITE} "
+        PS2="${CYAN}:${BOLD_CYAN}${${KEYMAP/vicmd/N}/(main|viins)/I}${CYAN}: %_>${WHITE} "
+        zle reset-prompt
+    }
+    zle -N zle-line-init
+    zle -N zle-keymap-select
+fi
 
 ###########################################################################}}}
 ############################ vim bindings #################################{{{
@@ -172,6 +175,7 @@ alias jjs='jj squash && clear && jj5'
 alias jju='jj rebase -s lwmp -o master; jj rebase -s xvqm -o master; jj rebase -s sooq -o master; jj rebase -s myxq -o master;'
 alias jj+='jj edit @+; jj st'
 alias jj-='jj edit @-; jj st'
+alias jjds='jj diff -s'
 alias gfc='git fetch && git checkout'
 alias ll='gls -F -lh --group-directories-first'
 alias lla='gls -F -alh --group-directories-first'
@@ -563,16 +567,18 @@ export PATH="$BUN_INSTALL/bin:$PATH"
 
 source ~/.config/zsh/local.zsh
 
-# jj info in right hand side zsh prompt
-setopt prompt_subst
-fpath+=~/.config/zsh/submodules/zsh-jj/functions
-zstyle ':vcs_info:*' enable jj
-zstyle ':vcs_info:*' check-for-changes true
-zstyle ':vcs_info:*:*' formats " (%s %m%a %b %i)"
-zstyle ':vcs_info:*:*' actionformats " (%s|%a %m %b %i)"
-autoload -Uz vcs_info
-(( ${precmd_functions[(I)vcs_info]} )) || precmd_functions+=(vcs_info)
-RPS1="${GREEN}%~ ${MAGENTA}\${vcs_info_msg_0_} ${RED}%(?..^E%?^)${WHITE}"
+# jj info in right hand side zsh prompt - except in kiro
+if [[ "$TERM_PROGRAM" != "kiro" ]]; then
+    setopt prompt_subst
+    fpath+=~/.config/zsh/submodules/zsh-jj/functions
+    zstyle ':vcs_info:*' enable jj
+    zstyle ':vcs_info:*' check-for-changes true
+    zstyle ':vcs_info:*:*' formats " (%s %m%a %b %i)"
+    zstyle ':vcs_info:*:*' actionformats " (%s|%a %m %b %i)"
+    autoload -Uz vcs_info
+    (( ${precmd_functions[(I)vcs_info]} )) || precmd_functions+=(vcs_info)
+    RPS1="${GREEN}%~ ${MAGENTA}\${vcs_info_msg_0_} ${RED}%(?..^E%?^)${WHITE}"
+fi
 
 ###########################################################################}}}
 ######################### completion options ##############################{{{
