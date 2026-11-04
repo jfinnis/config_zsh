@@ -175,7 +175,7 @@ alias jjs='jj squash && clear && jj5'
 alias jju='jj rebase -s lwmp -o master; jj rebase -s xvqm -o master; jj rebase -s sooq -o master; jj rebase -s myxq -o master;'
 alias jj+='jj edit @+; jj st'
 alias jj-='jj edit @-; jj st'
-alias jjds='jj diff -s'
+alias jjds='jj diff --stat'
 alias gfc='git fetch && git checkout'
 alias ll='gls -F -lh --group-directories-first'
 alias lla='gls -F -alh --group-directories-first'
@@ -228,6 +228,14 @@ alias urldecode_json='xargs -0 node -e "console.log(decodeURIComponent(process.a
 ###########################################################################}}}
 ############################## functions ##################################{{{
 ##############################################################################
+
+# open changes in current or provided revision in Neovim (jv = jj to vim)
+jv() {
+    local revset="${1:-@}"
+    local -a files=("${(@f)$(jj diff -r "$revset" -T 'if(status != "removed", path ++ "\n")')}")
+    (( $#files )) && vim -- "${files[@]}"
+}
+
 # jj diff piped to delta but passes args to jj
 jjd() {
     jj diff "$@" | delta --pager "less -FRX"
