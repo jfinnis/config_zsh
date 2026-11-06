@@ -168,6 +168,7 @@ alias jjb='jj bookmark list'
 alias jj@='jj log -r "ancestors(reachable(@, mutable()), 2)"' # jj log just @-chain
 #alias jjf='jj git fetch' - now a function
 #alias jjd - jj diff - now a function
+alias wjj='watch jj diff --stat'
 alias jjdm='jj describe -m '
 alias jjcm='jj commit -m '
 alias jjp='jj git push'
